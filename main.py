@@ -3,38 +3,33 @@
 #
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
-# ファイル名設定用
-import configparser
-import datetime
-import os
-
-# Seleniumのドライバ
+from bs4 import BeautifulSoup
+from icrawler.builtin import GoogleImageCrawler
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-# # Seleniumで要素の読み込みを待機するためのパッケージ類
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-# BS4
-from bs4 import BeautifulSoup
 import codecs
+import datetime
+import os
 import re
 import requests
-
-# Get json
-import json
-import urllib.request
-
 import time
-
 import urllib.parse
+import urllib.request
 
 
 currentdirectory = os.path.dirname(os.path.abspath(__file__))
 os.chdir(currentdirectory)
 print(os.getcwd())
+
+
+# 検索パラメータ
+AGE_MIN = 22
+AGE_MAX = 24
+
 
 # 定数
 DATA_FILEPATH = os.path.join(
@@ -46,8 +41,9 @@ WAITING_TIME = 10000
 
 # URI
 baseUris = [
+    # https://www.talent-databank.co.jp/guideline/index.html
     'https://www.talent-databank.co.jp',
-    'https://talemecasting-next.com'
+    'https://talemecasting-next.com'  # https://talemecasting-next.com/agreement
 ]
 targetUris = [
     'https://www.talent-databank.co.jp/',
@@ -83,6 +79,15 @@ def main():
             fox.set_page_load_timeout(6000)
             try:
                 fox.set_window_size(1280, 720)
+
+                # talent-databank
+
+                # talemecasting-next
+
+                # temp
+
+                # crawler = GoogleImageCrawler(storage={"root_dir": "images"})
+                # crawler.crawl(keyword="犬", max_num=100)
 
                 # サイトごとに一覧を取得
                 for i, targetUri in enumerate(targetUris):
@@ -156,7 +161,6 @@ def main():
                     #             print('\tarticleUri: {} {}'.format(
                     #                 uri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
                     #             fox.get(uri)
-
 
                     #             # データファイルに出力
                     #             print('{}\t\t{}\t\t{}\t\t{}\t\t{}'.format(
