@@ -81,8 +81,50 @@ def main():
                 fox.set_window_size(1280, 720)
 
                 # talent-databank
+                baseUri = baseUris[0]
+                targetUri = targetUris[0]
+                print('\tbaseUri: {} {}'.format(
+                    baseUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+                print('\ttargetUri: {} {}'.format(
+                    targetUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+
+                fox.get(targetUri)
+                time.sleep(1)
+                WebDriverWait(fox, WAITING_TIME).until(EC.presence_of_element_located((By.XPATH, '//body')))
+                print('body', file=logfile, flush=True)
+
+                source = fox.page_source
+                bs = BeautifulSoup(source, 'lxml')
+                print('bs', file=logfile, flush=True)
+                print(source, file=logfile, flush=True)
+
+
+
+
+
+
+
+
+
+
+                return
 
                 # talemecasting-next
+                baseUri = baseUris[1]
+                targetUri = targetUris[1]
+                print('\tbaseUri: {} {}'.format(
+                    baseUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+                print('\ttargetUri: {} {}'.format(
+                    targetUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+
+
+
+
+
+
+
+
+
 
                 # temp
 
