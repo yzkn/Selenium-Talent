@@ -6,3 +6,7 @@ geckodriver.log
 img/*.jpeg
 img/*.jpg
 img/*.png
+
+img/*/*.jpeg
+img/*/*.jpg
+img/*/*.png
