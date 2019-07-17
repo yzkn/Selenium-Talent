@@ -2,3 +2,6 @@ dat*.txt
 log*.txt
 
 geckodriver.log
+
+img/*.jpg
+img/*.png
