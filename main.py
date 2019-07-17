@@ -162,7 +162,7 @@ def collect():
                                         'a', class_=re.compile('talent'))
                                     if len(links) > 0:
                                         link = links[0]
-                                        name = link.text
+                                        name = str(link.text)
                                         result_names.append(name)
 
                                         profile_page = baseUri + \
@@ -244,8 +244,8 @@ def collect():
                                         imgs = div.find_all('img')
                                         if len(imgs) > 0:
                                             img = imgs[0]
-                                            name = img.get(
-                                                'alt').replace('　', ' ')
+                                            name = str(img.get(
+                                                'alt')).replace('　', ' ')
                                             result_names.append(name)
                                             download_img(img.get('src'), name)
 
@@ -288,6 +288,7 @@ def collect():
                         datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
                 except:
                     pass
+    return result_names
 
 
 def search(names):
