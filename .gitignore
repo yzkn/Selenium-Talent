@@ -3,5 +3,6 @@ log*.txt
 
 geckodriver.log
 
+img/*.jpeg
 img/*.jpg
 img/*.png

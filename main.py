@@ -51,7 +51,8 @@ baseUris = [
 ]
 targetUris = [
     'https://www.talent-databank.co.jp/',
-    'https://talemecasting-next.com/talent?birth_year_min=&birth_year_max=&age_min=22&age_max=24&genre%5B%5D=15&height_min=&height_max=&weight_min=&weight_max=&blood=&constellation=&keyword=&carrier='
+    'https://talemecasting-next.com/talent?sex_flg%5B%5D=1&genre%5B%5D=15&age_min=' +
+    str(AGE_MIN)+'&age_max='+str(AGE_MAX)
 ]
 
 # # カテゴリ毎に、取得するページ数
@@ -88,40 +89,118 @@ def collect():
             try:
                 fox.set_window_size(1280, 720)
 
-                # talent-databank
-                baseUri = baseUris[0]
-                targetUri = targetUris[0]
+                # # talent-databank
+                # baseUri = baseUris[0]
+                # targetUri = targetUris[0]
+                # print('\tbaseUri: {} {}'.format(
+                #     baseUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+                # print('\ttargetUri: {} {}'.format(
+                #     targetUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+
+                # # 検索条件
+
+                # fox.get(targetUri)
+                # time.sleep(1)
+                # WebDriverWait(fox, WAITING_TIME).until(
+                #     EC.presence_of_element_located((By.XPATH, '//body')))
+                # print('body', file=logfile, flush=True)
+
+                # # 「女性」
+                # clickSelector(fox, 'input[type="checkbox"][value="female"]')
+
+                # #  「タレント・俳優・女優」（最初の要素）の「もっと詳しく」
+                # clickLink(fox, 'もっと詳しく')
+
+                # # 「女優」
+                # clickSelector(fox, 'input[type="checkbox"][value=":女優"]')
+
+                # # 年齢
+                # clearAndSendKeys(fox, 'age_min', str(AGE_MIN))
+                # clearAndSendKeys(fox, 'age_max', str(AGE_MAX))
+
+                # # 「すべての条件を併せて検索」
+                # clickSelector(
+                #     fox, 'input[type="image"][src="img/top_search_btn.jpg"]')
+
+                # # 検索結果1ページ目
+                # time.sleep(1)
+                # WebDriverWait(fox, WAITING_TIME).until(
+                #     EC.presence_of_element_located((By.XPATH, '//body')))
+                # print('body', file=logfile, flush=True)
+
+                # source = fox.page_source
+                # bs = BeautifulSoup(source, 'lxml')
+                # print('bs', file=logfile, flush=True)
+                # # print(source, file=logfile, flush=True)
+
+                # searchnavi_total = bs.find_all(
+                #     'span', class_=re.compile('searchnavi_total'))
+                # print(searchnavi_total)
+                # if len(searchnavi_total) == 0:
+                #     return
+                # count_all = int(searchnavi_total[0].text)
+                # last_page = -((-1 * count_all) // PERSONS_PER_PAGE)  # 切り上げ
+
+                # for i in range(last_page):
+                #     print('\tpage: {} {} {} {}'.format(
+                #         i, last_page, count_all, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
+                #     tables = bs.find_all('table', id=re.compile('search-results'))
+                #     if len(tables) > 0:
+                #         table = tables[0]
+                #         trs = table.find_all('tr')
+                #         if len(trs) > 0:
+                #             for tr in trs:
+                #                 name = ''
+                #                 profile_page = ''
+
+                #                 try:
+                #                     # 個人
+                #                     links = tr.find_all('a', class_=re.compile('talent'))
+                #                     if len(links) > 0:
+                #                         link = links[0]
+                #                         name = link.text
+                #                         result_names.append(name)
+
+                #                         profile_page = baseUri + '/search/' + link.get('href')
+
+                #                         # データファイルに出力
+                #                         print('{}\t\t{}'.format(name, profile_page),
+                #                             file=datafile, flush=True)
+
+                #                         try:
+                #                             imgs = tr.find_all('img')
+                #                             if len(imgs) > 0:
+                #                                 download_img(baseUri + imgs[0].get('src'), name)
+                #                         except:
+                #                             pass
+                #                 except Exception as e:
+                #                     print(e, file=logfile, flush=True)
+
+                #     # 次のページに行く
+                #     try:
+                #         clickLink(fox, '次のページ')
+
+                #         time.sleep(1)
+                #         WebDriverWait(fox, WAITING_TIME).until(
+                #             EC.presence_of_element_located((By.XPATH, '//body')))
+                #         print('body', file=logfile, flush=True)
+
+                #         source = fox.page_source
+                #         bs = BeautifulSoup(source, 'lxml')
+                #         print('bs', file=logfile, flush=True)
+                #     except:
+                #         break
+
+
+                # talemecasting-next
+                baseUri = baseUris[1]
+                targetUri = targetUris[1]
                 print('\tbaseUri: {} {}'.format(
                     baseUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
                 print('\ttargetUri: {} {}'.format(
                     targetUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
 
-                # 検索条件
-
                 fox.get(targetUri)
-                time.sleep(1)
-                WebDriverWait(fox, WAITING_TIME).until(
-                    EC.presence_of_element_located((By.XPATH, '//body')))
-                print('body', file=logfile, flush=True)
-
-                # 「女性」
-                clickSelector(fox, 'input[type="checkbox"][value="female"]')
-
-                #  「タレント・俳優・女優」（最初の要素）の「もっと詳しく」
-                clickLink(fox, 'もっと詳しく')
-
-                # 「女優」
-                clickSelector(fox, 'input[type="checkbox"][value=":女優"]')
-
-                # 年齢
-                clearAndSendKeys(fox, 'age_min', str(AGE_MIN))
-                clearAndSendKeys(fox, 'age_max', str(AGE_MAX))
-
-                # 「すべての条件を併せて検索」
-                clickSelector(
-                    fox, 'input[type="image"][src="img/top_search_btn.jpg"]')
-
-                # 検索結果1ページ目
                 time.sleep(1)
                 WebDriverWait(fox, WAITING_TIME).until(
                     EC.presence_of_element_located((By.XPATH, '//body')))
@@ -132,50 +211,54 @@ def collect():
                 print('bs', file=logfile, flush=True)
                 # print(source, file=logfile, flush=True)
 
-                searchnavi_total = bs.find_all(
-                    'span', class_=re.compile('searchnavi_total'))
-                print(searchnavi_total)
-                if len(searchnavi_total) == 0:
+                total = bs.find_all(
+                    'span', class_=re.compile('required'))
+                if len(total) == 0:
                     return
-                count_all = int(searchnavi_total[0].text)
+                count_all = int(total[0].text)
                 last_page = -((-1 * count_all) // PERSONS_PER_PAGE)  # 切り上げ
 
                 for i in range(last_page):
                     print('\tpage: {} {} {} {}'.format(
                         i, last_page, count_all, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
-                    tables = bs.find_all('table', id=re.compile('search-results'))
-                    if len(tables) > 0:
-                        table = tables[0]
-                        trs = table.find_all('tr')
-                        if len(trs) > 0:
-                            for tr in trs:
+                    uls = bs.find_all('ul', id=re.compile('display-image'))
+                    if len(uls) > 0:
+                        ul = uls[0]
+                        lis = ul.find_all('li')
+                        if len(lis) > 0:
+                            for li in lis:
+                                name = ''
+                                profile_page = ''
+
                                 try:
                                     # 個人
-                                    links = tr.find_all('a', class_=re.compile('talent'))
-                                    if len(links) > 0:
-                                        link = links[0]
-                                        name = link.text
-                                        result_names.append(name)
+                                    divs = li.find_all(
+                                        'div', class_='talent-head-img')
+                                    if len(divs) > 0:
+                                        div = divs[0]
+                                        imgs = div.find_all('img')
+                                        if len(imgs) > 0:
+                                            img = imgs[0]
+                                            name = img.get('alt').replace('　', ' ')
+                                            result_names.append(name)
+                                            download_img(img.get('src'), name)
 
-                                        profile_page = baseUri + '/search/' + link.get('href')
+                                            links = li.find_all('a')
+                                            if len(links) > 0:
+                                                link = links[0]
+                                                profile_page = baseUri + \
+                                                    link.get('href')
 
-                                        # データファイルに出力
-                                        print('{}\t\t{}'.format(name, profile_page),
-                                            file=datafile, flush=True)
+                                                # データファイルに出力
+                                                print('{}\t\t{}'.format(name, profile_page),
+                                                      file=datafile, flush=True)
 
-                                        try:
-                                            imgs = tr.find_all('img')
-                                            if len(imgs) > 0:
-                                                download_img(baseUri + imgs[0].get('src'), name)
-                                        except:
-                                            pass
                                 except Exception as e:
                                     print(e, file=logfile, flush=True)
 
                     # 次のページに行く
                     try:
-                        clickLink(fox, '次のページ')
-
+                        clickClassName(fox, 'next')
 
                         time.sleep(1)
                         WebDriverWait(fox, WAITING_TIME).until(
@@ -187,19 +270,6 @@ def collect():
                         print('bs', file=logfile, flush=True)
                     except:
                         break
-
-                # TODO:
-                time.sleep(10)
-                return
-
-                # talemecasting-next
-                baseUri = baseUris[1]
-                targetUri = targetUris[1]
-                print('\tbaseUri: {} {}'.format(
-                    baseUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
-                print('\ttargetUri: {} {}'.format(
-                    targetUri, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')), file=logfile, flush=True)
-
 
             except Exception as e:
                 print(e, file=logfile, flush=True)
