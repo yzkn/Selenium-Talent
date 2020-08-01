@@ -1,3 +1,5 @@
+myenv
+
 dat*.txt
 log*.txt
 
@@ -10,3 +12,4 @@ img/*.png
 img/*/*.jpeg
 img/*/*.jpg
 img/*/*.png
+.vscode/settings.json

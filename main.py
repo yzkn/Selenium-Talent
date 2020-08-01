@@ -1,10 +1,7 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-#
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 from bs4 import BeautifulSoup
-from icrawler.builtin import GoogleImageCrawler
+from icrawler.builtin import BingImageCrawler
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -34,14 +31,15 @@ AGE_MAX = 24
 
 # 定数
 DATA_FILEPATH = os.path.join(
-    currentdirectory, 'dat_'+datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.txt')
+    currentdirectory, 'data', 'dat_'+datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.txt')
 LOG_FILEPATH = os.path.join(
-    currentdirectory, 'log_'+datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.txt')
+    currentdirectory, 'data', 'log_'+datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.txt')
 
 PHOTO_DIRPATH = os.path.join(currentdirectory, 'img')
 
 PERSONS_PER_PAGE = 20
-WAITING_TIME = 10000
+WAITING_TIME = 2000
+WAITING_TIME_SEARCH = 10
 
 # URI
 baseUris = [
@@ -51,7 +49,7 @@ baseUris = [
 ]
 targetUris = [
     'https://www.talent-databank.co.jp/',
-    'https://talemecasting-next.com/talent?sex_flg%5B%5D=1&genre%5B%5D=15&age_min=' +
+    'https://talemecasting-next.com/talent?sex_flg%5B%5D=1&genre%5B%5D=11&genre%5B%5D=12&genre%5B%5D=13&genre%5B%5D=15&genre%5B%5D=16&genre%5B%5D=17&genre%5B%5D=19&genre%5B%5D=20&age_min=' +
     str(AGE_MIN)+'&age_max='+str(AGE_MAX)
 ]
 
@@ -73,6 +71,8 @@ def get_filepath():
 def collect():
     result_names = []
 
+    os.makedirs(os.path.join(currentdirectory, 'data'), exist_ok=True)
+
     if os.path.exists(PHOTO_DIRPATH):
         nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         os.rename(PHOTO_DIRPATH, PHOTO_DIRPATH + '_' + nowstr + '.bak')
@@ -85,9 +85,12 @@ def collect():
             binary = FirefoxBinary(
                 'C:\\Program Files\\Mozilla Firefox\\firefox.exe')
             profile = FirefoxProfile(
-                'C:\\Users\\y\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\hqterean.default')
-            fox = webdriver.Firefox(firefox_profile=profile, firefox_binary=binary,
-                                    executable_path='C:\\geckodriver\\geckodriver.exe')
+                'C:\\Users\\y\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\mv060idd.default')
+            fox = webdriver.Firefox(
+                firefox_profile=profile,
+                firefox_binary=binary,
+                executable_path='C:\\geckodriver\\geckodriver.exe'
+            )
             fox.set_page_load_timeout(6000)
             try:
                 fox.set_window_size(1280, 720)
@@ -111,11 +114,18 @@ def collect():
                 # 「女性」
                 clickSelector(fox, 'input[type="checkbox"][value="female"]')
 
-                #  「タレント・俳優・女優」（最初の要素）の「もっと詳しく」
-                clickLink(fox, 'もっと詳しく')
+                # #  「タレント・俳優・女優」（最初の要素）の「もっと詳しく」
+                # clickLink(fox, 'もっと詳しく')
+
+                # # 「女優」
+                # clickSelector(fox, 'input[type="checkbox"][value=":女優"]')
 
                 # 「女優」
-                clickSelector(fox, 'input[type="checkbox"][value=":女優"]')
+                clickSelector(fox, 'input[type="checkbox"][value="タレント,俳優,女優"]')
+                clickSelector(fox, 'input[type="checkbox"][value="音楽"]')
+                clickSelector(fox, 'input[type="checkbox"][value="スポーツ"]')
+                clickSelector(fox, 'input[type="checkbox"][value="話す仕事"]')
+                clickSelector(fox, 'input[type="checkbox"][value="モデル"]')
 
                 # 年齢
                 clearAndSendKeys(fox, 'age_min', str(AGE_MIN))
@@ -162,15 +172,18 @@ def collect():
                                         'a', class_=re.compile('talent'))
                                     if len(links) > 0:
                                         link = links[0]
-                                        name = str(link.text)
-                                        result_names.append(name)
+                                        name = str(link.text).replace(' ', '')
 
                                         profile_page = baseUri + \
                                             '/search/' + link.get('href')
 
+                                        genre = tr.findAll('td')[3].text.replace('\n', '')
+
+                                        result_names.append(name + ' ' + genre)
+
                                         # データファイルに出力
-                                        print('{}\t\t{}'.format(name, profile_page),
-                                              file=datafile, flush=True)
+                                        print('{}\t\t{}\t\t{}'.format(name, profile_page, genre),
+                                            file=datafile, flush=True)
 
                                         try:
                                             imgs = tr.find_all('img')
@@ -239,14 +252,17 @@ def collect():
                                     # 個人
                                     divs = li.find_all(
                                         'div', class_='talent-head-img')
+                                    summaries = li.find_all(
+                                        'div', class_='talent-summary')
                                     if len(divs) > 0:
                                         div = divs[0]
+                                        smr  =summaries[0]
                                         imgs = div.find_all('img')
                                         if len(imgs) > 0:
                                             img = imgs[0]
                                             name = str(img.get(
-                                                'alt')).replace('　', ' ')
-                                            result_names.append(name)
+                                                'alt')).replace('　', '')
+
                                             download_img(img.get('src'), name)
 
                                             links = li.find_all('a')
@@ -255,9 +271,13 @@ def collect():
                                                 profile_page = baseUri + \
                                                     link.get('href')
 
+                                                genre = smr.find_all(
+                                                    'div', class_='genre')[0].text.replace('\n', '')
+                                                result_names.append(name + ' ' + genre)
+
                                                 # データファイルに出力
-                                                print('{}\t\t{}'.format(name, profile_page),
-                                                      file=datafile, flush=True)
+                                                print('{}\t\t{}\t\t{}'.format(name, profile_page, genre),
+                                                    file=datafile, flush=True)
 
                                 except Exception as e:
                                     print(e, file=logfile, flush=True)
@@ -296,8 +316,9 @@ def search(names):
     for name in names:
         profile_dirpath = os.path.join(PHOTO_DIRPATH, name)
         os.makedirs(profile_dirpath, exist_ok=True)
-        crawler = GoogleImageCrawler(storage={"root_dir": profile_dirpath})
-        crawler.crawl(keyword=name, max_num=10)
+        crawler = BingImageCrawler(storage={"root_dir": profile_dirpath})
+        crawler.crawl(keyword=name, max_num=100)
+        time.sleep(WAITING_TIME_SEARCH)
 
 
 def clickClassName(fox, className):
