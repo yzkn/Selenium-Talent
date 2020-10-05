@@ -5,6 +5,8 @@ log*.txt
 
 geckodriver.log
 
+data/img*
+
 data/img/*.jpeg
 data/img/*.jpg
 data/img/*.png
