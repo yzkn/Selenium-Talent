@@ -5,11 +5,11 @@ log*.txt
 
 geckodriver.log
 
-img/*.jpeg
-img/*.jpg
-img/*.png
+data/img/*.jpeg
+data/img/*.jpg
+data/img/*.png
 
-img/*/*.jpeg
-img/*/*.jpg
-img/*/*.png
+data/img/*/*.jpeg
+data/img/*/*.jpg
+data/img/*/*.png
 .vscode/settings.json
